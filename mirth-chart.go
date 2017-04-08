@@ -27,12 +27,29 @@ func main() {
 	findAllXmlFiles(srcDir)
 }
 
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
 func findAllXmlFiles(path string) {
 	err := filepath.Walk(path, visit)
-	fmt.Printf("filepath walk error %v \n", err)
+	check(err)
 }
 
 func visit(path string, f os.FileInfo, err error) error {
 	fmt.Printf("Visited: %s\n", path)
+
+	if !f.IsDir() {
+		fl, err := os.Open(path)
+		defer fl.Close()
+		check(err)
+		fmt.Printf("name: %s\n", f.Name())
+		b1 := make([]byte, 20)
+		fl.ReadAt(b1, 0)
+		fmt.Printf("%s\n", string(b1))
+	}
+
 	return nil
 }
