@@ -1,7 +1,6 @@
 package searchers
 
 import (
-	"fmt"
 	"os"
 	"path"
 	"path/filepath"
@@ -34,11 +33,11 @@ func visit(p string, f os.FileInfo, err error) error {
 		fl.Close()
 
 		if strings.Contains(string(b1), "<channel version=") {
-			fmt.Printf("CHANNEL %s\n", p)
+			//fmt.Printf("CHANNEL %s\n", p)
 			channelPaths = append(channelPaths, p)
 		}
 		//fmt.Printf("%s\n", string(b1))
-		fmt.Printf("%d  %d\n", len(channelPaths), cap(channelPaths))
+		//fmt.Printf("%d  %d\n", len(channelPaths), cap(channelPaths))
 
 		//return nil
 	}

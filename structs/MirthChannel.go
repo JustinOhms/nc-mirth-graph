@@ -1,8 +1,11 @@
 package structs
 
 type MirthChannel struct {
-	Id             string
-	Name           string
+	Id             string `xml:"id"`
+	Name           string `xml:"name"`
+	Enabled        string `xml:"enabled"`
+	Description    string `xml:"description"`
 	FilePath       string
-	DestinationIds []string
+	SourceType     string   `xml:"sourceConnector>properties>scheme"`
+	DestinationIds []string `xml:"destinationConnectors>connector>properties>channelId"`
 }
