@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/justinohms/mirth-chart/structs"
-	"github.com/justinohms/mirth-chart/utils"
+	"github.com/justinohms/mirthchart/structs"
+	"github.com/justinohms/mirthchart/utils"
 )
 
 var srcDirP = flag.String("src", "/Users/justinohms/Dropbox/nc/src/salmon-mirth/src/mirth/channel-groups", "The directory containing the mirth source xml files.")
@@ -18,7 +18,7 @@ var srcDirP = flag.String("src", "/Users/justinohms/Dropbox/nc/src/salmon-mirth/
 //var srcDirP = flag.String("src", "", "The directory containing the mirth source xml files.")
 
 var channels = make(map[string]structs.MirthChannel)
-var chans []string
+var channelPaths []string
 
 func main() {
 	flag.Parse()
@@ -35,9 +35,9 @@ func main() {
 	dirsize, _ := utils.FileCount(srcDir)
 
 	fmt.Println("File count:", dirsize)
-	chans = make([]string, 0, dirsize)
+	channelPaths = make([]string, 0, dirsize)
 
-	findAllXmlFiles(srcDir)
+	findAllChannelFiles(srcDir)
 }
 
 func check(e error) {
@@ -46,13 +46,12 @@ func check(e error) {
 	}
 }
 
-func findAllXmlFiles(path string) {
+func findAllChannelFiles(path string) {
 	err := filepath.Walk(path, visit)
 	check(err)
 }
 
 func visit(p string, f os.FileInfo, err error) error {
-	//fmt.Printf("Visited: %s\n", p)
 
 	//if it's not a dir and is an xml file we are interested
 	if !f.IsDir() && strings.ToLower(path.Ext(p)) == ".xml" {
@@ -72,11 +71,11 @@ func visit(p string, f os.FileInfo, err error) error {
 			}
 
 			channels[p] = ch
-			chans = append(chans, p)
+			channelPaths = append(channelPaths, p)
 
 		}
 		//fmt.Printf("%s\n", string(b1))
-		fmt.Printf("%d  %d  %d\n", len(channels), len(chans), cap(chans))
+		fmt.Printf("%d  %d  %d\n", len(channels), len(channelPaths), cap(channelPaths))
 
 		//return nil
 	}
