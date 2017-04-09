@@ -33,7 +33,6 @@ func main() {
 	check(err)
 
 	fmt.Println(channelPaths)
-
 }
 
 func check(e error) {
