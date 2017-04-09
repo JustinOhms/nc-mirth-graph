@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/justinohms/mirth-chart/structs"
+	"github.com/justinohms/mirth-chart/utils"
 )
 
 var srcDirP = flag.String("src", "/Users/justinohms/Dropbox/nc/src/salmon-mirth/src/mirth/channel-groups", "The directory containing the mirth source xml files.")
@@ -17,6 +18,7 @@ var srcDirP = flag.String("src", "/Users/justinohms/Dropbox/nc/src/salmon-mirth/
 //var srcDirP = flag.String("src", "", "The directory containing the mirth source xml files.")
 
 var channels = make(map[string]structs.MirthChannel)
+var chans []string
 
 func main() {
 	flag.Parse()
@@ -29,6 +31,11 @@ func main() {
 		srcDir = *srcDirP
 	}
 	fmt.Println("Source Directory:", srcDir)
+
+	dirsize, _ := utils.FileCount(srcDir)
+
+	fmt.Println("File count:", dirsize)
+	chans = make([]string, 0, dirsize)
 
 	findAllXmlFiles(srcDir)
 }
@@ -65,11 +72,13 @@ func visit(p string, f os.FileInfo, err error) error {
 			}
 
 			channels[p] = ch
+			chans = append(chans, p)
 
 		}
 		//fmt.Printf("%s\n", string(b1))
-		fmt.Printf("%d\n", len(channels))
-	}
+		fmt.Printf("%d  %d  %d\n", len(channels), len(chans), cap(chans))
 
+		//return nil
+	}
 	return nil
 }
