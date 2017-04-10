@@ -8,6 +8,7 @@ import (
 
 	"github.com/justinohms/mirthchart/fileutils"
 	"github.com/justinohms/mirthchart/mirth"
+	"github.com/justinohms/mirthchart/server"
 )
 
 //read from the command line
@@ -46,7 +47,11 @@ func main() {
 
 		fmt.Println(ch)
 
+		mirth.ToJson(ch)
 	}
+
+	fmt.Println(server.ServeDynamicContent())
+
 }
 
 func check(e error) {
