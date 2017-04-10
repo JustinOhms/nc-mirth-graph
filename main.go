@@ -29,7 +29,8 @@ func main() {
 	fmt.Println("Source Directory:", srcDir)
 
 	//load the channelPaths
-	channelPaths, err := mirth.FindAllChannelFiles(srcDir)
+	s := mirth.Scanner{}
+	channelPaths, err := s.FindAllChannelFiles(srcDir)
 	check(err)
 
 	//parse the channels
