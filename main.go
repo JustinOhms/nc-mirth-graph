@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/justinohms/mirthchart/fileutils"
 	"github.com/justinohms/mirthchart/mirth"
 )
 
-//The following line is the real line, uncomment it and delete the next line after
-//var srcDirP = flag.String("src", "", "The directory containing the mirth source xml files.")
-var srcDirP = flag.String("src", "/Users/justinohms/Dropbox/nc/src/salmon-mirth/src/mirth/channel-groups", "The directory containing the mirth source xml files.")
+//read from the command line
+var srcDirP = flag.String("src", "", "The directory containing the mirth source xml files.")
 
 var channels = make(map[string]mirth.Channel)
 var channelPaths []string
@@ -22,7 +22,13 @@ func main() {
 	srcDir := ""
 	fmt.Println("Mirth Chart")
 	if *srcDirP == "" {
-		srcDir, _ = os.Getwd()
+		//read from a settings file
+		fileSetting := fileutils.FileSetting(".settings")
+		if fileSetting == "" {
+			srcDir, _ = os.Getwd()
+		} else {
+			srcDir = fileSetting
+		}
 	} else {
 		srcDir = *srcDirP
 	}
