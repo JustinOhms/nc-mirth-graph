@@ -1,6 +1,6 @@
-package structs
+package mirth
 
-type MirthChannel struct {
+type Channel struct {
 	Id             string `xml:"id"`
 	Name           string `xml:"name"`
 	Enabled        string `xml:"enabled"`

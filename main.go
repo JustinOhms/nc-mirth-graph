@@ -6,16 +6,14 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/justinohms/mirthchart/parsers"
-	"github.com/justinohms/mirthchart/searchers"
-	"github.com/justinohms/mirthchart/structs"
+	"github.com/justinohms/mirthchart/mirth"
 )
 
 //The following line is the real line, uncomment it and delete the next line after
 //var srcDirP = flag.String("src", "", "The directory containing the mirth source xml files.")
 var srcDirP = flag.String("src", "/Users/justinohms/Dropbox/nc/src/salmon-mirth/src/mirth/channel-groups", "The directory containing the mirth source xml files.")
 
-var channels = make(map[string]structs.MirthChannel)
+var channels = make(map[string]mirth.Channel)
 var channelPaths []string
 
 func main() {
@@ -31,12 +29,12 @@ func main() {
 	fmt.Println("Source Directory:", srcDir)
 
 	//load the channelPaths
-	channelPaths, err := searchers.FindAllChannelFiles(srcDir)
+	channelPaths, err := mirth.FindAllChannelFiles(srcDir)
 	check(err)
 
 	//parse the channels
 	for i := 0; i < len(channelPaths); i++ {
-		ch := parsers.ParseChannelFile(channelPaths[i])
+		ch := mirth.ParseChannelFile(channelPaths[i])
 		channels[ch.FilePath] = ch
 
 		fmt.Println(ch)
