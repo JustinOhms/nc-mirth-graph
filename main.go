@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/justinohms/mirthChart/launcher"
 	"github.com/justinohms/mirthchart/fileutils"
 	"github.com/justinohms/mirthchart/mirth"
 	"github.com/justinohms/mirthchart/server"
@@ -43,12 +44,14 @@ func main() {
 	//parse the channels
 	for i := 0; i < len(channelPaths); i++ {
 		ch := mirth.ParseChannelFile(channelPaths[i])
-		channels[ch.FilePath] = ch
+		channels[ch.Id] = ch
 
-		fmt.Println(ch)
-
-		mirth.ToJson(ch)
+		//fmt.Println(ch)
+		//fmt.Println(mirth.ToJson(ch))
 	}
+
+	g := mirth.ToGraphJson(channels)
+	fmt.Println(g)
 
 	portchannel := make(chan int)
 	go server.ServeDynamicContent(portchannel)
@@ -56,9 +59,17 @@ func main() {
 	serverport := <-portchannel
 	fmt.Println("Server started on port:", serverport)
 
+	//this is just for development
+	//return
+
+	url := fmt.Sprintf("http://127.0.0.1:%d/data", serverport)
+	launcher.OpenURL(url)
+
 	for {
 		//loop forever
+		//maybe we monitor the folder in this loop
 	}
+
 }
 
 func check(e error) {

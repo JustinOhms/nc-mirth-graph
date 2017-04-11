@@ -3,7 +3,6 @@ package mirth
 import (
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
 
 	"io/ioutil"
 	"os"
@@ -32,8 +31,8 @@ func readChannelFile(p string) Channel {
 	return q
 }
 
-func ToJson(c Channel) {
+func ToJson(c Channel) string {
 	b, err := json.Marshal(c)
 	check(err)
-	fmt.Println(string(b))
+	return string(b)
 }
