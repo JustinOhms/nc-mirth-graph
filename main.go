@@ -50,8 +50,15 @@ func main() {
 		mirth.ToJson(ch)
 	}
 
-	fmt.Println(server.ServeDynamicContent())
+	portchannel := make(chan int)
+	go server.ServeDynamicContent(portchannel)
+	fmt.Println("after")
+	serverport := <-portchannel
+	fmt.Println("Server started on port:", serverport)
 
+	for {
+		//loop forever
+	}
 }
 
 func check(e error) {
