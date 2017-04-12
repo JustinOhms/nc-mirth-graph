@@ -2,17 +2,45 @@ package server
 
 import (
 	"fmt"
+	"io"
+
 	"net"
 	"net/http"
+	"os"
 	"strings"
 )
 
+var Content string
+
 func provideData(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "THIS IS A TEST")
+	fmt.Printf("data request in: %s \n", string(r.RequestURI))
+	fmt.Fprint(w, Content)
+	fmt.Printf("data request served content length %d\n", len(Content))
 }
 
-func ServeDynamicContent(c chan int) error {
+func provideUI(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path[1:]
+	fmt.Printf(path)
+
+	fr, err := os.Open(path)
+	defer fr.Close()
+
+	if err != nil {
+		strings.Contains(err.Error(), "no such file or directory")
+		w.Header().Set("404", "Not Found")
+		fmt.Fprint(w, "NOT FOUND")
+		return
+	}
+
+	io.Copy(w, fr)
+	fr.Close()
+}
+
+func ServeDynamicContent(c chan int, d chan string) {
 	http.HandleFunc("/data", provideData)
+	http.HandleFunc("/ui/", provideUI)
+
+	go updateDynamicContent(d)
 
 	var server *http.Server
 	var listener net.Listener
@@ -38,5 +66,9 @@ func ServeDynamicContent(c chan int) error {
 	}
 	fmt.Println("p", finalport)
 	c <- finalport
-	return server.Serve(tcpKeepAliveListener{listener.(*net.TCPListener)})
+	check(server.Serve(tcpKeepAliveListener{listener.(*net.TCPListener)}))
+}
+
+func updateDynamicContent(d chan string) {
+	Content = <-d
 }

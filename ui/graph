@@ -1,0 +1,9 @@
+<html>
+<head>
+<title>Mirth Graph 0.1b</title>
+<script src="js/sigma.min.js"></script>
+</head>
+<body>
+<h1>Mirth Graph</h1>
+</body>
+</html>

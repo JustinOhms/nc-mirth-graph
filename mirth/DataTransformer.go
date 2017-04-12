@@ -1,64 +1,70 @@
 package mirth
 
 import (
+	"encoding/json"
 	//"encoding/json"
 	"fmt"
 )
 
 //"fmt"
 
-type node struct {
-	id    string
-	label string
-	x     int
-	y     int
+type Node struct {
+	Id    string `json:"id"`
+	Label string `json:"label"`
+	X     int
+	Y     int
 }
 
-type edge struct {
-	id     string
-	source string
-	target string
-	t      string
+type Edge struct {
+	Id     string `json:"id"`
+	Source string `json:"source"`
+	Target string `json:"target"`
+	T      string `json:"type"`
 }
 
 type Graph struct {
-	Nodes []node
-	Edges []edge
+	Nodes []Node `json:"nodes"`
+	Edges []Edge `json:"edges`
 }
 
-func ToGraphJson(channels map[string]Channel) *Graph {
-	edges := make([]edge, 0, len(channels))
-	nodes := make([]node, 0, len(channels))
+func ToGraph(channels map[string]Channel) *Graph {
+	edges := make([]Edge, 0, len(channels))
+	nodes := make([]Node, 0, len(channels))
 
 	for _, v := range channels {
 
 		// one node for every channel
-		n := &node{
-			id:    v.Id,
-			label: v.Name,
+		n := &Node{
+			Id:    v.Id,
+			Label: v.Name,
 		}
 		nodes = append(nodes, *n)
 
 		for d := range v.DestinationIds {
 
 			//one edge for every channel destination
-			e := &edge{
-				id:     fmt.Sprintf("%d", len(edges)+10001),
-				source: v.Id,
-				target: v.DestinationIds[d],
-				t:      "arrow",
+			e := &Edge{
+				Id:     fmt.Sprintf("%d", len(edges)+10001),
+				Source: v.Id,
+				Target: v.DestinationIds[d],
+				T:      "arrow",
 			}
 			edges = append(edges, *e)
 		}
 
 	}
 
-	graph := &Graph{
-		Nodes: nodes,
-		Edges: edges,
-	}
-	//	fmt.Println(nodes)
-	//	fmt.Println(edges)
-	//	fmt.Println(graph)
+	graph := new(Graph)
+	graph.Edges = edges
+	graph.Nodes = nodes
+
 	return graph
+}
+
+func ToGraphJson(channels map[string]Channel) string {
+	g := ToGraph(channels)
+	fmt.Println(g)
+	b, err := json.Marshal(g)
+	check(err)
+	return string(b)
 }

@@ -54,15 +54,20 @@ func main() {
 	fmt.Println(g)
 
 	portchannel := make(chan int)
-	go server.ServeDynamicContent(portchannel)
+
+	datachannel := make(chan string)
+
+	go server.ServeDynamicContent(portchannel, datachannel)
 	fmt.Println("after")
 	serverport := <-portchannel
 	fmt.Println("Server started on port:", serverport)
 
+	datachannel <- g
+
 	//this is just for development
 	//return
 
-	url := fmt.Sprintf("http://127.0.0.1:%d/data", serverport)
+	url := fmt.Sprintf("http://127.0.0.1:%d/ui/graph", serverport)
 	launcher.OpenURL(url)
 
 	for {
