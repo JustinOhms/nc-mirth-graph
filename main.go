@@ -46,8 +46,6 @@ func main() {
 		ch := mirth.ParseChannelFile(channelPaths[i])
 		channels[ch.Id] = ch
 
-		//fmt.Println(ch)
-		//fmt.Println(mirth.ToJson(ch))
 	}
 
 	g := mirth.ToGraphJson(channels)

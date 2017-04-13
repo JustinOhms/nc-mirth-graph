@@ -2,7 +2,11 @@ package mirth
 
 import (
 	"encoding/json"
-	//"encoding/json"
+	"math/rand"
+	"unicode"
+
+	"strings"
+
 	"fmt"
 )
 
@@ -11,8 +15,9 @@ import (
 type Node struct {
 	Id    string `json:"id"`
 	Label string `json:"label"`
-	X     int
-	Y     int
+	X     int    `json:"x"`
+	Y     int    `json:"y"`
+	Size  int    `json:"size"`
 }
 
 type Edge struct {
@@ -24,7 +29,20 @@ type Edge struct {
 
 type Graph struct {
 	Nodes []Node `json:"nodes"`
-	Edges []Edge `json:"edges`
+	Edges []Edge `json:"edges"`
+}
+
+func fieldfunction(c rune) bool {
+	return !unicode.IsLetter(c) && !unicode.IsNumber(c)
+}
+
+func toNumber(s string) int {
+	var v int
+	b := []byte(s)
+	for i := range b {
+		v = v + int(i)
+	}
+	return v
 }
 
 func ToGraph(channels map[string]Channel) *Graph {
@@ -33,10 +51,19 @@ func ToGraph(channels map[string]Channel) *Graph {
 
 	for _, v := range channels {
 
+		nf := strings.FieldsFunc(v.Name, fieldfunction)
+
+		nx := toNumber(nf[0])
+
+		ny := toNumber(nf[len(nf)-1])
+
 		// one node for every channel
 		n := &Node{
 			Id:    v.Id,
 			Label: v.Name,
+			Y:     ny*100 + rand.Intn(len(v.Name))*nx,
+			X:     nx*100 + rand.Intn(len(v.Name))*ny,
+			Size:  300,
 		}
 		nodes = append(nodes, *n)
 
