@@ -19,13 +19,13 @@ func provideData(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "graphdata=")
 	fmt.Fprint(w, Content)
 	fmt.Fprint(w, ";")
-	fmt.Printf("data content length %d\n", len(Content))
+	fmt.Printf("serving data: %d\n", len(Content))
 	finishedchannel <- true
 }
 
 func provideUI(w http.ResponseWriter, r *http.Request, c chan int) {
 	path := r.URL.Path //r.URL.Path[1:]
-	fmt.Println("provide ui path:", path)
+	fmt.Println("serving interface:", path)
 
 	//performCopy(w, path)
 	//con := FSMustString(false, path)

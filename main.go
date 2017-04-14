@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/justinohms/mirthChart/launcher"
-	"github.com/justinohms/mirthchart/fileutils"
-	"github.com/justinohms/mirthchart/mirth"
-	"github.com/justinohms/mirthchart/server"
+	"github.com/justinohms/mirthgraph/fileutils"
+	"github.com/justinohms/mirthgraph/launcher"
+	"github.com/justinohms/mirthgraph/mirth"
+	"github.com/justinohms/mirthgraph/server"
 )
 
 //read from the command line
@@ -25,7 +25,7 @@ func main() {
 	flag.Parse()
 
 	srcDir := ""
-	fmt.Println("Mirth Chart")
+	fmt.Println("Mirth Chart\nscanning directory...")
 	if *srcDirP == "" {
 		//read from a settings file
 		fileSetting := fileutils.FileSetting(".settings")
@@ -37,7 +37,7 @@ func main() {
 	} else {
 		srcDir = *srcDirP
 	}
-	fmt.Println("Source Directory:", srcDir)
+	fmt.Println(srcDir)
 
 	//load the channelPaths
 	s := mirth.Scanner{}
@@ -63,7 +63,7 @@ func main() {
 	go server.ServeDynamicContent(portchannel, datachannel, finishedchannel)
 	//fmt.Println("after")
 	serverport := <-portchannel
-	fmt.Println("Server started on port:", serverport)
+	fmt.Println("server started on port:", serverport)
 
 	// send the data in
 	datachannel <- g
@@ -81,6 +81,7 @@ func main() {
 
 	//wait for something from finished channel then exit
 	<-finishedchannel
+	fmt.Println("Complete, see your browser for directed graph diagram.\nexiting")
 }
 
 func check(e error) {
