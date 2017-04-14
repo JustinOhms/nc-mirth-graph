@@ -21,9 +21,19 @@ func provideData(w http.ResponseWriter, r *http.Request) {
 }
 
 func provideUI(w http.ResponseWriter, r *http.Request, c chan int) {
-	path := r.URL.Path[1:]
-	//fmt.Println("provide ui path:", path)
-	performCopy(w, path)
+	path := r.URL.Path //r.URL.Path[1:]
+	fmt.Println("provide ui path:", path)
+
+	//performCopy(w, path)
+	//con := FSMustString(false, path)
+
+	FSIoCopy(w, path)
+	//fmt.Println(con)
+
+	//io.WriteString(w, con)
+
+	//fmt.Fprint(w, )
+
 	c <- 1
 
 }

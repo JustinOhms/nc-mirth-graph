@@ -18,6 +18,9 @@ var srcDirP = flag.String("src", "", "The directory containing the mirth source 
 var channels = make(map[string]mirth.Channel)
 var channelPaths []string
 
+//The following line is used by go generate to build in static resources DO NOT DELETE
+//go:generate esc -o server/ui.go -pkg server ui
+
 func main() {
 	flag.Parse()
 
