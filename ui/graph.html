@@ -6009,7 +6009,7 @@ var createGraphFromData = function(data){
 <!-- <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/js/xtrace_graph.js"></script> -->
 <script type="text/javascript">
 // lightweight is an optional argument that will try to draw the graph as fast as possible
-function XTraceDAG(attachPoint, reports) {
+function MirthDAG(attachPoint, reports) {
     var dag = this;
     
     // Twiddle the attach point a little bit
@@ -6296,8 +6296,6 @@ function XTraceDAG(attachPoint, reports) {
 }
 </script>
 
-
-
 <!-- <link href="http://cs.brown.edu/people/jcmace/d3/stylesheets/xtrace.css" rel="stylesheet" type="text/css"> -->
 <style>
 .graph,.list {
@@ -6505,7 +6503,6 @@ text,tspan,.tipsy {
 }
 </style>
 
-
 <!-- <link href="http://cs.brown.edu/people/jcmace/d3/stylesheets/tipsy.css" rel="stylesheet" type="text/css" /> -->
 <style>
 .tipsy {
@@ -6635,7 +6632,6 @@ text,tspan,.tipsy {
 }
 </style>
 
-
 <!--  <link href="http://cs.brown.edu/people/jcmace/d3/stylesheets/jquery.contextMenu.css" rel="stylesheet" type="text/css" />  -->
 <style>
 .context-menu {
@@ -6663,6 +6659,7 @@ text,tspan,.tipsy {
 <!-- **************************************************************************************************** -->
 
 
+<!-- this is where the var graphdata comes from -->
 <script src="/data.json"></script>
 
 
@@ -6670,7 +6667,7 @@ text,tspan,.tipsy {
 
 <script>
 window.onload = function() {     
-    window.xtrace = new XTraceDAG(document.body, graphdata);
+    window.xtrace = new MirthDAG(document.body, graphdata);
 }
 </script>
 </head>
