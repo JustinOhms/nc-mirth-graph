@@ -7,8 +7,13 @@
 <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/lib/jQuery/jquery.tipsy.js"></script>
 <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/lib/jQuery/jquery.contextMenu.js"></script>
 <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/lib/dagre/dagre.js"></script>
+
+
 <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/js/Minimap.js"></script>
 <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/js/MinimapZoom.js"></script>
+
+
+
 
 <!-- <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/js/DirectedAcyclicGraph.js"></script> -->
 <script type="text/javascript">
@@ -248,15 +253,20 @@ function DirectedAcyclicGraph() {
 </script>
 
 
+
+
 <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/js/List.js"></script>
 <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/js/Selectable.js"></script>
 <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/js/Graph.js"></script>
 <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/js/History.js"></script>
+
+
 <!-- <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/js/Tooltip.js"></script> -->
 <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/js/ContextMenu.js"></script>
+
+
 <!-- <script type="text/javascript" src="http://cs.brown.edu/people/jcmace/d3/js/xtrace_utils.js"></script> -->
 <script type="text/javascript">
-
 // Problems with resizing and jquery and chrome and this stuff is so dumb.
 window.width = function() {
   return document.body.clientWidth;
@@ -265,10 +275,6 @@ window.width = function() {
 window.height = function() {
   return document.body.clientHeight;
 };
-
-
-
-
 
 var createGraphFromData = function(data){
     // Create nodes
@@ -297,8 +303,6 @@ var createGraphFromData = function(data){
     console.log("Done creating graph from data");
     return graph;
 }
-
-
 </script>
 
 
@@ -307,8 +311,6 @@ var createGraphFromData = function(data){
 // lightweight is an optional argument that will try to draw the graph as fast as possible
 function XTraceDAG(attachPoint, reports) {
     var dag = this;
-    
-
     
     // Twiddle the attach point a little bit
     var rootSVG = d3.select(attachPoint).append("svg").attr("width", "100%").attr("height", "100%");
@@ -319,7 +321,7 @@ function XTraceDAG(attachPoint, reports) {
     
     // Create the graph and history representations
     var graph = createGraphFromData(graphdata);
-console.info(graph)
+	console.info(graph)
 
     var history = DirectedAcyclicGraphHistory();
     
@@ -556,10 +558,7 @@ console.info(graph)
     this.graph = graph;
     this.resetViewport = resetViewport;
     this.history = history;
-    
-    
 
-    
     var animate = function() {
         var startTime = new Date().getTime();
         
@@ -593,10 +592,8 @@ console.info(graph)
             }
         }
         update();
-        
     }
 }
-
 </script>
 
 
@@ -605,11 +602,370 @@ console.info(graph)
 
 
 
+<!-- <link href="http://cs.brown.edu/people/jcmace/d3/stylesheets/xtrace.css" rel="stylesheet" type="text/css"> -->
+<style>
+.graph,.list {
+	cursor: default
+}
+
+.graph.animate .node {
+	opacity: 0;
+	transition: fill 0.5s, stroke 0.5s, opacity 1s;
+	-webkit-transition: fill 0.5s, stroke 0.5s, opacity 1s;
+}
+
+.graph.animate .node.visible {
+	opacity: 1;
+	transition: fill 0.5s, stroke 0.5s, opacity 0.5s;
+	-webkit-transition: fill 0.5s, stroke 0.5s, opacity 0.5s;
+}
+
+.graph.animate .node.visible.entering {
+	transition: fill 0.5s, stroke 0.5s, opacity 1.5s;
+	-webkit-transition: fill 0.5s, stroke 0.5s, opacity 1.5s;
+}
+
+.hovering .graph .node.visible {
+	opacity: 0.2;
+}
+
+.hovering .graph.animate .node.visible {
+	transition: fill 0.5s, stroke 0.5s, opacity 0.4s;
+	-webkit-transition: fill 0.5s, stroke 0.5s, opacity 0.4s;
+}
+
+.hovering .graph .node.visible.hovered,.hovering .graph .node.visible.selected
+	{
+	opacity: 1;
+}
+
+.hovering .graph .node.hovered.immediate rect {
+	stroke: #A4011B;
+	fill: #FFE0E5;
+}
+
+.graph .node rect {
+	fill: #FFF2CC;
+	stroke-width: 2px;
+	stroke: #A16D00;
+}
+
+.graph.animate .node rect {
+	transition: fill 0.5s, stroke 0.5s, stroke-width 0.5s;
+	-webkit-transition: fill 0.5s, stroke 0.5s, stroke-width 0.5s;
+}
+
+.graph .node text {
+	font-family: Verdana;
+}
+
+.graph .node.selected rect,.hovering .graph .node.selected rect,.hovering .graph .node.selected.hovered.immediate rect
+	{
+	stroke: #0F4BFF;
+	fill: #B3ECFF;
+}
+
+.graph .node.preview rect,.hovering .graph .node.preview rect {
+	fill: #EADAEC;
+	stroke: #9A38A2;
+}
+
+.graph .edge {
+	fill: none;
+	stroke-width: 2.5px;
+	stroke: #D19D00;
+	opacity: 0;
+}
+
+.graph.animate .edge {
+	transition: fill 0.1s, stroke 0.1s, stroke-width 0.1s, opacity 0.3s;
+	-webkit-transition: fill 0.1s, stroke 0.1s, stroke-width 0.1s, opacity
+		0.3s;
+}
+
+.graph .edge.visible.preview {
+	stroke-width: 4px;
+	stroke: #9A38A2;
+}
+
+.graph .edge.visible.selected,.hovering .graph .edge.hovered.immediate.selected
+	{
+	stroke-width: 6px;
+	stroke: #386AFF;
+}
+
+.graph .edge.visible.preview,.hovering .graph .edge.hovered.immediate.preview
+	{
+	stroke: #9A38A2;
+}
+
+.graph .edge.visible {
+	opacity: 1;
+}
+
+.graph.animate .edge.visible {
+	transition: fill 0.5s, stroke 0.5s, stroke-width 0.5s, opacity 0.5s;
+	-webkit-transition: fill 0.5s, stroke 0.5s, stroke-width 0.5s, opacity
+		0.5s;
+}
+
+.graph.animate .edge.visible.entering {
+	transition: fill 0.5s, stroke 0.5s, stroke-width 0.5s, opacity 1.5s;
+	transition-delay: 0, 0, 0, 0.5s;
+	-webkit-transition: fill 0.5s, stroke 0.5s, stroke-width 0.5s, opacity
+		1.5s;
+	-webkit-transition-delay: 0, 0, 0, 0.5s;
+}
+
+.hovering .graph .edge.visible {
+	opacity: 0.1;
+}
+
+.hovering .graph.animate .edge.visible {
+	transition: fill 0.5s, stroke 0.5s, stroke-width 0.5s, opacity 0.4s;
+	-webkit-transition: fill 0.5s, stroke 0.5s, stroke-width 0.5s, opacity
+		0.4s;
+}
+
+.hovering .graph .edge.visible.hovered,.hovering .graph .edge.selected {
+	opacity: 1;
+}
+
+.hovering .graph .edge.hovered.immediate {
+	stroke: #A4011B;
+	stroke-width: 4px;
+}
+
+.minimap .edge {
+	stroke-width: 2px;
+	stroke: black;
+	fill-opacity: 0;
+}
+
+.minimap .node rect {
+	fill: #ddd;
+	stroke-width: 2px;
+	stroke: black;
+}
+
+.list .item rect {
+	stroke: #0F4BFF;
+	fill: #B3ECFF;
+	fill-opacity: 0.5;
+	stroke-width: 1;
+	transition: fill 0.5s, stroke 0.5s;
+	-webkit-transition: fill 0.5s, stroke 0.5s;
+}
+
+.list .item:hover rect {
+	fill: #FFF2CC;
+	stroke: #A16D00;
+}
+
+.list .item text {
+	x: 50%;
+	dy: 1em;
+	text-anchor: middle;
+	dominant-baseline: central;
+}
+
+.xtrace-tooltip {
+	text-align: left;
+}
+
+.xtrace-tooltip .key {
+	display: inline-block;
+	float: left;
+	width: 90px;
+	font-weight: bold;
+}
+
+.xtrace-tooltip .value {
+	display: inline-block;
+	float: left;
+	word-wrap: break-word;
+	max-width: 410px;
+}
+
+.xtrace-tooltip .clear {
+	clear: both;
+}
+
+.context-menu .highlight {
+	color: #7F2389;
+}
+
+.context-menu a:hover .highlight {
+	color: #CA78D2;
+}
+
+text,tspan,.tipsy {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+</style>
 
 
-<link href="http://cs.brown.edu/people/jcmace/d3/stylesheets/xtrace.css" rel="stylesheet" type="text/css">
-<link href="http://cs.brown.edu/people/jcmace/d3/stylesheets/tipsy.css" rel="stylesheet" type="text/css" />
-<link href="http://cs.brown.edu/people/jcmace/d3/stylesheets/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
+<!-- <link href="http://cs.brown.edu/people/jcmace/d3/stylesheets/tipsy.css" rel="stylesheet" type="text/css" /> -->
+<style>
+.tipsy {
+	font-size: 15px;
+	position: absolute;
+	padding: 5px;
+	z-index: 100000;
+}
+
+.tipsy-inner {
+	background: rgba(0, 0, 0, 0.5);
+	color: #FFF;
+	max-width: 500px;
+	padding: 5px 8px 4px 8px;
+	text-align: center;
+}
+
+/* Rounded corners */
+.tipsy-inner {
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+/* Uncomment for shadow */
+/*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/
+.tipsy-arrow {
+	position: absolute;
+	width: 0;
+	height: 0;
+	line-height: 0;
+	border: 5px dashed #000;
+	opacity: 0.5;
+}
+
+/* Rules to colour arrows */
+.tipsy-arrow-n {
+	border-bottom-color: #000;
+}
+
+.tipsy-arrow-s {
+	border-top-color: #000;
+}
+
+.tipsy-arrow-e {
+	border-left-color: #000;
+}
+
+.tipsy-arrow-w {
+	border-right-color: #000;
+}
+
+.tipsy-n .tipsy-arrow {
+	top: 0px;
+	left: 50%;
+	margin-left: -5px;
+	border-bottom-style: solid;
+	border-top: none;
+	border-left-color: transparent;
+	border-right-color: transparent;
+}
+
+.tipsy-nw .tipsy-arrow {
+	top: 0;
+	left: 10px;
+	border-bottom-style: solid;
+	border-top: none;
+	border-left-color: transparent;
+	border-right-color: transparent;
+}
+
+.tipsy-ne .tipsy-arrow {
+	top: 0;
+	right: 10px;
+	border-bottom-style: solid;
+	border-top: none;
+	border-left-color: transparent;
+	border-right-color: transparent;
+}
+
+.tipsy-s .tipsy-arrow {
+	bottom: 0;
+	left: 50%;
+	margin-left: -5px;
+	border-top-style: solid;
+	border-bottom: none;
+	border-left-color: transparent;
+	border-right-color: transparent;
+}
+
+.tipsy-sw .tipsy-arrow {
+	bottom: 0;
+	left: 10px;
+	border-top-style: solid;
+	border-bottom: none;
+	border-left-color: transparent;
+	border-right-color: transparent;
+}
+
+.tipsy-se .tipsy-arrow {
+	bottom: 0;
+	right: 10px;
+	border-top-style: solid;
+	border-bottom: none;
+	border-left-color: transparent;
+	border-right-color: transparent;
+}
+
+.tipsy-e .tipsy-arrow {
+	right: 0;
+	top: 50%;
+	margin-top: -5px;
+	border-left-style: solid;
+	border-right: none;
+	border-top-color: transparent;
+	border-bottom-color: transparent;
+}
+
+.tipsy-w .tipsy-arrow {
+	left: 0;
+	top: 50%;
+	margin-top: -5px;
+	border-right-style: solid;
+	border-left: none;
+	border-top-color: transparent;
+	border-bottom-color: transparent;
+}
+</style>
+
+
+<!--  <link href="http://cs.brown.edu/people/jcmace/d3/stylesheets/jquery.contextMenu.css" rel="stylesheet" type="text/css" />  -->
+<style>
+.context-menu {
+    background: rgba(245, 245, 245, 0.7);
+    border: 1px solid #999999;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.context-menu a {
+    color: #333333;
+    display: block;
+    padding: 3px;
+    text-decoration: none;
+}
+.context-menu a:hover {
+	background: rgba(102, 102, 102, 0.7);
+    color: white;
+    text-decoration: none;
+}
+</style>
+
+
+
+
+
 <script>
 window.onload = function() {     
     window.xtrace = new XTraceDAG(document.body, graphdata);
