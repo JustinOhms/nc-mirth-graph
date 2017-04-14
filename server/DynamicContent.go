@@ -12,12 +12,15 @@ import (
 
 var Content string
 
+var finishedchannel chan bool
+
 func provideData(w http.ResponseWriter, r *http.Request) {
 	//fmt.Printf("data request in: %s \n", string(r.RequestURI))
 	fmt.Fprint(w, "graphdata=")
 	fmt.Fprint(w, Content)
 	fmt.Fprint(w, ";")
 	fmt.Printf("data content length %d\n", len(Content))
+	finishedchannel <- true
 }
 
 func provideUI(w http.ResponseWriter, r *http.Request, c chan int) {
@@ -63,9 +66,11 @@ func provideUIHandler(w http.ResponseWriter, r *http.Request) {
 	<-c
 }
 
-func ServeDynamicContent(c chan int, d chan string) {
+func ServeDynamicContent(c chan int, d chan string, f chan bool) {
 	http.HandleFunc("/data.json", provideData)
 	http.HandleFunc("/ui/", provideUIHandler)
+
+	finishedchannel = f
 
 	go updateDynamicContent(d)
 

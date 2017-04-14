@@ -58,11 +58,14 @@ func main() {
 
 	datachannel := make(chan string)
 
-	go server.ServeDynamicContent(portchannel, datachannel)
+	finishedchannel := make(chan bool)
+
+	go server.ServeDynamicContent(portchannel, datachannel, finishedchannel)
 	//fmt.Println("after")
 	serverport := <-portchannel
 	fmt.Println("Server started on port:", serverport)
 
+	// send the data in
 	datachannel <- g
 
 	//this is just for development
@@ -71,11 +74,13 @@ func main() {
 	url := fmt.Sprintf("http://127.0.0.1:%d/ui/graph.html", serverport)
 	launcher.OpenURL(url)
 
-	for {
-		//loop forever
-		//maybe we monitor the folder in this loop
-	}
+	//for {
+	//loop forever
+	//maybe we monitor the folder in this loop
+	//}
 
+	//wait for something from finished channel then exit
+	<-finishedchannel
 }
 
 func check(e error) {
