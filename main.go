@@ -49,14 +49,14 @@ func main() {
 	}
 
 	g := mirth.ToGraphJson(channels)
-	fmt.Println(g)
+	//fmt.Println(g)
 
 	portchannel := make(chan int)
 
 	datachannel := make(chan string)
 
 	go server.ServeDynamicContent(portchannel, datachannel)
-	fmt.Println("after")
+	//fmt.Println("after")
 	serverport := <-portchannel
 	fmt.Println("Server started on port:", serverport)
 

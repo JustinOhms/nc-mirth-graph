@@ -90,7 +90,7 @@ func ToGraph(channels map[string]Channel) *Graph {
 
 func ToGraphJson(channels map[string]Channel) string {
 	g := ToGraph(channels)
-	fmt.Println(g)
+	//fmt.Println(g)
 	b, err := json.Marshal(g)
 	check(err)
 	return string(b)

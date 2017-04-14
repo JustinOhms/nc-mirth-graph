@@ -13,16 +13,16 @@ import (
 var Content string
 
 func provideData(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("data request in: %s \n", string(r.RequestURI))
+	//fmt.Printf("data request in: %s \n", string(r.RequestURI))
 	fmt.Fprint(w, "graphdata=")
 	fmt.Fprint(w, Content)
 	fmt.Fprint(w, ";")
-	fmt.Printf("data request served content length %d\n", len(Content))
+	fmt.Printf("data content length %d\n", len(Content))
 }
 
 func provideUI(w http.ResponseWriter, r *http.Request, c chan int) {
 	path := r.URL.Path[1:]
-	fmt.Println("provide ui path:", path)
+	//fmt.Println("provide ui path:", path)
 	performCopy(w, path)
 	c <- 1
 
@@ -31,17 +31,17 @@ func provideUI(w http.ResponseWriter, r *http.Request, c chan int) {
 func performCopy(w http.ResponseWriter, path string) {
 	fr, err := os.Open(path)
 	defer fr.Close()
-	fmt.Println("perfcopy ", path)
+	//fmt.Println("perfcopy ", path)
 	if err != nil {
 		strings.Contains(err.Error(), "no such file or directory")
 		w.Header().Set("404", "Not Found")
 		fmt.Fprint(w, "NOT FOUND")
 		return
 	}
-	fmt.Println("iocopy ", path)
+	//fmt.Println("iocopy ", path)
 	b, err := io.Copy(w, fr)
 	check(err)
-	fmt.Println("Bytes sent:", path, b)
+	fmt.Println(path, "content length", b)
 	fr.Close()
 
 }
@@ -71,7 +71,7 @@ func ServeDynamicContent(c chan int, d chan string) {
 
 		ln, err := net.Listen("tcp", addr)
 		if err != nil {
-			if strings.Contains(err.Error(), "bind: permission denied") {
+			if strings.Contains(err.Error(), "bind: permission denied") || strings.Contains(err.Error(), "bind: address already in use") {
 				bindport++
 			} else {
 				check(err)
@@ -81,7 +81,7 @@ func ServeDynamicContent(c chan int, d chan string) {
 		}
 		listener = ln
 	}
-	fmt.Println("p", finalport)
+	//fmt.Println("p", finalport)
 	c <- finalport
 	check(server.Serve(tcpKeepAliveListener{listener.(*net.TCPListener)}))
 }
