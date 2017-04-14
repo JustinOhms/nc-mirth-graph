@@ -65,7 +65,7 @@ func main() {
 	//this is just for development
 	//return
 
-	url := fmt.Sprintf("http://127.0.0.1:%d/ui/graph", serverport)
+	url := fmt.Sprintf("http://127.0.0.1:%d/ui/graph2", serverport)
 	launcher.OpenURL(url)
 
 	for {
