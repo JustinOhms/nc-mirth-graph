@@ -2,7 +2,7 @@
 <html>
 <head>
 
-<!-- local
+<!-- local x
 For temporary purposes I am embeding all of the JS and CSS in the HTML
 These could be extracted in the future once I get the server behaving properly
 In all cases the script tag is preceeded by the original script tag 
@@ -5074,7 +5074,9 @@ Node.prototype.visible = function(_) {
 }
 
 Node.prototype.addChild = function(child) {
-    this.child_nodes[child.id] = child;
+	if(child){
+    	this.child_nodes[child.id] = child;
+	}
 }
 
 Node.prototype.addParent = function(parent) {
@@ -5990,8 +5992,12 @@ var createGraphFromData = function(data){
     // Second link the nodes together
     console.info("Linking graph nodes");
     for (var i = 0; i < data.edges.length; i++){
-        nodes[data.edges[i].source].addChild(nodes[data.edges[i].target]);
-        nodes[data.edges[i].target].addParent(nodes[data.edges[i].source]);
+    	try{
+        	nodes[data.edges[i].source].addChild(nodes[data.edges[i].target]);
+    	}catch(e){}
+    	try{
+	        nodes[data.edges[i].target].addParent(nodes[data.edges[i].source]);
+    	}catch(e){}
     }
 
 

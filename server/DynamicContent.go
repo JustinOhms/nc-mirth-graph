@@ -21,28 +21,28 @@ func provideData(w http.ResponseWriter, r *http.Request) {
 	finishedchannel <- true
 }
 
-func provideUI(w http.ResponseWriter, r *http.Request, c chan int) {
+func provideUI(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path //r.URL.Path[1:]
 	fmt.Println("serving interface:", path)
 
 	uselocal := true
 	FSIoCopy(uselocal, path, w)
 
-	c <- 1
 }
 
-func provideUIHandler(w http.ResponseWriter, r *http.Request) {
-	c := make(chan int, 10)
-	go provideUI(w, r, c)
+//func provideUIHandler(w http.ResponseWriter, r *http.Request) {
+//	c := make(chan int, 10)
+//	go provideUI(w, r, c)
 
-	for {
-		<-c
-	}
-}
+//	//for {
+//	<-c
+//	fmt.Println("ui request written")
+//	//}
+//}
 
-func ServeDynamicContent(c chan int, d chan string, f chan bool) {
+func ServeDynamicContent(p chan int, d chan string, f chan bool) {
 	http.HandleFunc("/data.json", provideData)
-	http.HandleFunc("/ui/", provideUIHandler)
+	http.HandleFunc("/ui/", provideUI)
 
 	finishedchannel = f
 
@@ -71,7 +71,7 @@ func ServeDynamicContent(c chan int, d chan string, f chan bool) {
 		listener = ln
 	}
 	//fmt.Println("p", finalport)
-	c <- finalport
+	p <- finalport
 	check(server.Serve(tcpKeepAliveListener{listener.(*net.TCPListener)}))
 	for {
 
