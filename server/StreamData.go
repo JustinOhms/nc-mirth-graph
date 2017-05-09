@@ -5,11 +5,12 @@ import (
 	"compress/gzip"
 	"encoding/base64"
 	"io"
+	"os"
 
 	"path"
 )
 
-func (_escStaticFS) IoCopy(w io.Writer, name string) {
+func (_escStaticFS) IoCopy(name string, w io.Writer) {
 	f, present := _escData[path.Clean(name)]
 	if !present {
 		//return nil, os.ErrNotExist
@@ -33,7 +34,19 @@ func (_escStaticFS) IoCopy(w io.Writer, name string) {
 
 }
 
-func FSIoCopy(w io.Writer, name string) {
-	_escStatic.IoCopy(w, name)
+func (_escLocalFS) IoCopy(name string, w io.Writer) {
+	f, present := _escData[path.Clean(name)]
+	if !present {
+		return
+	}
+	file, _ := os.Open(f.local)
+	io.Copy(w, file)
+}
 
+func FSIoCopy(useLocal bool, name string, w io.Writer) {
+	if useLocal {
+		_escLocal.IoCopy(name, w)
+	} else {
+		_escStatic.IoCopy(name, w)
+	}
 }

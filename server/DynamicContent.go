@@ -2,11 +2,9 @@ package server
 
 import (
 	"fmt"
-	"io"
 
 	"net"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -27,43 +25,19 @@ func provideUI(w http.ResponseWriter, r *http.Request, c chan int) {
 	path := r.URL.Path //r.URL.Path[1:]
 	fmt.Println("serving interface:", path)
 
-	//performCopy(w, path)
-	//con := FSMustString(false, path)
-
-	FSIoCopy(w, path)
-	//fmt.Println(con)
-
-	//io.WriteString(w, con)
-
-	//fmt.Fprint(w, )
+	uselocal := true
+	FSIoCopy(uselocal, path, w)
 
 	c <- 1
-
-}
-
-func performCopy(w http.ResponseWriter, path string) {
-	fr, err := os.Open(path)
-	defer fr.Close()
-	//fmt.Println("perfcopy ", path)
-	if err != nil {
-		strings.Contains(err.Error(), "no such file or directory")
-		w.Header().Set("404", "Not Found")
-		fmt.Fprint(w, "NOT FOUND")
-		return
-	}
-	//fmt.Println("iocopy ", path)
-	b, err := io.Copy(w, fr)
-	check(err)
-	fmt.Println(path, "content length", b)
-	fr.Close()
-
 }
 
 func provideUIHandler(w http.ResponseWriter, r *http.Request) {
-	c := make(chan int)
+	c := make(chan int, 10)
 	go provideUI(w, r, c)
 
-	<-c
+	for {
+		<-c
+	}
 }
 
 func ServeDynamicContent(c chan int, d chan string, f chan bool) {
@@ -99,8 +73,14 @@ func ServeDynamicContent(c chan int, d chan string, f chan bool) {
 	//fmt.Println("p", finalport)
 	c <- finalport
 	check(server.Serve(tcpKeepAliveListener{listener.(*net.TCPListener)}))
+	for {
+
+	}
 }
 
 func updateDynamicContent(d chan string) {
-	Content = <-d
+	//just wait for content to be updated
+	for {
+		Content = <-d
+	}
 }

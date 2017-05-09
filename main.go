@@ -74,14 +74,15 @@ func main() {
 	url := fmt.Sprintf("http://127.0.0.1:%d/ui/graph.html", serverport)
 	launcher.OpenURL(url)
 
-	//for {
-	//loop forever
-	//maybe we monitor the folder in this loop
-	//}
+	for {
+		//loop forever
+		//maybe we monitor the folder in this loop
+		//wait for something from finished channel then exit
+		<-finishedchannel
+		fmt.Println("Complete, see your browser for directed graph diagram.\nexiting")
 
-	//wait for something from finished channel then exit
-	<-finishedchannel
-	fmt.Println("Complete, see your browser for directed graph diagram.\nexiting")
+	}
+
 }
 
 func check(e error) {
