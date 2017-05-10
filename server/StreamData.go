@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/base64"
+	"fmt"
 	"io"
 	"os"
 
@@ -37,6 +38,7 @@ func (_escStaticFS) IoCopy(name string, w io.Writer) {
 func (_escLocalFS) IoCopy(name string, w io.Writer) {
 	f, present := _escData[path.Clean(name)]
 	if !present {
+		fmt.Println("Not found:" + name)
 		return
 	}
 	file, _ := os.Open(f.local)
