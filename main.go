@@ -18,7 +18,19 @@ var srcDirP = flag.String("src", "", "The directory containing the mirth source 
 var channels = make(map[string]mirth.Channel)
 var channelPaths []string
 
-//The following line is used by go generate to build in static resources DO NOT DELETE
+/*
+NOTE about static vs. local content
+
+TL/DR; Adding a new file? Create empty file, run 'go generate', set "useLocal" flag
+
+When setting the UI to serve up live file system files using the "useLocal" flag
+if you add new files you must still run the 'go generate' command in order for those
+files to be served locally.  This is because even if the file is being served from
+from the local file system, the presense of the file is checked using the static
+resources table.
+
+The following line is used by go generate to build in static resources DO NOT DELETE
+*/
 //go:generate esc -o server/ui.go -pkg server ui
 
 func main() {

@@ -25,20 +25,10 @@ func provideUI(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path //r.URL.Path[1:]
 	fmt.Println("serving interface:", path)
 
-	uselocal := true
+	uselocal := false
 	FSIoCopy(uselocal, path, w)
 
 }
-
-//func provideUIHandler(w http.ResponseWriter, r *http.Request) {
-//	c := make(chan int, 10)
-//	go provideUI(w, r, c)
-
-//	//for {
-//	<-c
-//	fmt.Println("ui request written")
-//	//}
-//}
 
 func ServeDynamicContent(p chan int, d chan string, f chan bool) {
 	http.HandleFunc("/data.json", provideData)
