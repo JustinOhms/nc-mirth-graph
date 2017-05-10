@@ -9,6 +9,7 @@ import (
 )
 
 var Content string
+var UseLocal bool = false
 
 var finishedchannel chan bool
 
@@ -25,9 +26,7 @@ func provideUI(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path //r.URL.Path[1:]
 	fmt.Println("serving interface:", path)
 
-	uselocal := false
-	FSIoCopy(uselocal, path, w)
-
+	FSIoCopy(UseLocal, path, w)
 }
 
 func ServeDynamicContent(p chan int, d chan string, f chan bool) {

@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/justinohms/mirthgraph/fileutils"
+	"github.com/justinohms/iniflags"
+
 	"github.com/justinohms/mirthgraph/launcher"
 	"github.com/justinohms/mirthgraph/mirth"
 	"github.com/justinohms/mirthgraph/server"
@@ -14,6 +15,7 @@ import (
 
 //read from the command line
 var srcDirP = flag.String("src", "", "The directory containing the mirth source xml files.")
+var customUIP = flag.Bool("custom_ui", false, "Serve custom UI instead of the embedded UI.")
 
 var channels = make(map[string]mirth.Channel)
 var channelPaths []string
@@ -34,18 +36,20 @@ The following line is used by go generate to build in static resources DO NOT DE
 //go:generate esc -o server/ui.go -pkg server ui
 
 func main() {
-	flag.Parse()
+	iniflags.SetConfigFile(".settings")
+	iniflags.Parse()
+
+	fmt.Println("Mirth Chart")
+
+	useLocal := *customUIP
+	if useLocal {
+		fmt.Println("Using custom UI")
+	}
 
 	srcDir := ""
-	fmt.Println("Mirth Chart\nscanning directory...")
+	fmt.Println("scanning directory...")
 	if *srcDirP == "" {
-		//read from a settings file
-		fileSetting := fileutils.FileSetting(".settings")
-		if fileSetting == "" {
-			srcDir, _ = os.Getwd()
-		} else {
-			srcDir = fileSetting
-		}
+		srcDir, _ = os.Getwd()
 	} else {
 		srcDir = *srcDirP
 	}
@@ -72,7 +76,9 @@ func main() {
 
 	finishedchannel := make(chan bool)
 
+	server.UseLocal = useLocal
 	go server.ServeDynamicContent(portchannel, datachannel, finishedchannel)
+
 	//fmt.Println("after")
 	serverport := <-portchannel
 	fmt.Println("server started on port:", serverport)
@@ -91,7 +97,7 @@ func main() {
 		//maybe we monitor the folder in this loop
 		//wait for something from finished channel then exit
 		<-finishedchannel
-		fmt.Println("Complete, see your browser for directed graph diagram.\nexiting")
+		fmt.Println("Complete, see your browser for directed graph diagram.\n")
 
 	}
 
