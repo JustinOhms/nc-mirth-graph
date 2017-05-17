@@ -11,14 +11,19 @@ import (
 	"github.com/justinohms/mirthgraph/launcher"
 	"github.com/justinohms/mirthgraph/mirth"
 	"github.com/justinohms/mirthgraph/server"
+
+	"github.com/justinohms/mirthgraph/consoleInfo"
 )
 
 //read from the command line
 var srcDirP = flag.String("src", "", "The directory containing the mirth source xml files.")
 var customUIP = flag.Bool("custom_ui", false, "Serve custom UI instead of the embedded UI.")
+var verboseMode = flag.Bool("verbose", false, "Verbose console output.")
 
 var channels = make(map[string]mirth.Channel)
 var channelPaths []string
+
+var con consoleInfo.ConsoleInfo
 
 /*
 NOTE about static vs. local content
@@ -37,23 +42,27 @@ The following line is used by go generate to build in static resources DO NOT DE
 
 func main() {
 	iniflags.SetConfigFile(".settings")
+	iniflags.SetAllowMissingConfigFile(true)
 	iniflags.Parse()
+
+	con := consoleInfo.NewConsoleInfo(*verboseMode)
+	server.Con = *con
 
 	fmt.Println("Mirth Chart")
 
 	useLocal := *customUIP
 	if useLocal {
-		fmt.Println("Using custom UI")
+		con.PrintVerbose("Using custom UI")
 	}
 
 	srcDir := ""
-	fmt.Println("scanning directory...")
+	con.PrintVerbose("scanning directory...")
 	if *srcDirP == "" {
 		srcDir, _ = os.Getwd()
 	} else {
 		srcDir = *srcDirP
 	}
-	fmt.Println(srcDir)
+	con.PrintAlways(srcDir)
 
 	//load the channelPaths
 	s := mirth.Scanner{}
@@ -81,7 +90,8 @@ func main() {
 
 	//fmt.Println("after")
 	serverport := <-portchannel
-	fmt.Println("server started on port:", serverport)
+	//fmt.Println("server started on port:", serverport)
+	con.PrintVerbose(fmt.Sprintf("server started on port: %d", serverport))
 
 	// send the data in
 	datachannel <- g
@@ -97,11 +107,21 @@ func main() {
 		//maybe we monitor the folder in this loop
 		//wait for something from finished channel then exit
 		<-finishedchannel
-		fmt.Println("Complete, see your browser for directed graph diagram.\n")
-
+		//fmt.Println("Complete, see your browser for directed graph diagram.\n")
+		con.PrintAlways("Complete, see your browser for directed graph diagram.\n")
 	}
 
 }
+
+//func PrintVerbose(s string) {
+//	if *verboseMode {
+//		PrintAlways(s)
+//	}
+//}
+
+//func PrintAlways(s string) {
+//	fmt.Println(s)
+//}
 
 func check(e error) {
 	if e != nil {

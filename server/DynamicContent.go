@@ -3,6 +3,8 @@ package server
 import (
 	"fmt"
 
+	"github.com/justinohms/mirthgraph/consoleInfo"
+
 	"net"
 	"net/http"
 	"strings"
@@ -13,18 +15,20 @@ var UseLocal bool = false
 
 var finishedchannel chan bool
 
+var Con consoleInfo.ConsoleInfo
+
 func provideData(w http.ResponseWriter, r *http.Request) {
 	//fmt.Printf("data request in: %s \n", string(r.RequestURI))
 	fmt.Fprint(w, "graphdata=")
 	fmt.Fprint(w, Content)
 	fmt.Fprint(w, ";")
-	fmt.Printf("serving data: %d\n", len(Content))
+	Con.PrintVerbose(fmt.Sprintf("serving data: %d", len(Content)))
 	finishedchannel <- true
 }
 
 func provideUI(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path //r.URL.Path[1:]
-	fmt.Println("serving interface:", path)
+	Con.PrintVerbose(fmt.Sprintf("serving interface: %s", path))
 
 	FSIoCopy(UseLocal, path, w)
 }
