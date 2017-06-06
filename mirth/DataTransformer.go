@@ -18,6 +18,11 @@ type Node struct {
 	X     int    `json:"x"`
 	Y     int    `json:"y"`
 	Size  int    `json:"size"`
+	Tags  []Tag  `json:"tags"`
+}
+
+type Tag struct {
+	Name string `json:"name"`
 }
 
 type Edge struct {

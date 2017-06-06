@@ -159,7 +159,7 @@ var DirectedAcyclicGraphContextMenu = function(graph, graphSVG) {
                 }
             }
 
-            addHideField("Agent");
+            addHideField("Channel");
             addHideField("Host");
             addHideField("Class");
             addHideField("ProcessID");
@@ -187,7 +187,7 @@ var DirectedAcyclicGraphContextMenu = function(graph, graphSVG) {
                "name": "Select path"
             });
             
-            addSelectField("Agent");
+            addSelectField("Channel");
             addSelectField("Host");
             addSelectField("Class");
             addSelectField("ProcessID");

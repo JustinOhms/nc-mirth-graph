@@ -29,7 +29,6 @@ func provideData(w http.ResponseWriter, r *http.Request) {
 func provideUI(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path //r.URL.Path[1:]
 	Con.PrintVerbose(fmt.Sprintf("serving interface: %s", path))
-
 	FSIoCopy(UseLocal, path, w)
 }
 

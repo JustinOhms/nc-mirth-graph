@@ -14,7 +14,7 @@ var createGraphFromData = function(data){
     for (var i = 0; i < data.nodes.length; i++) {
         var id = data.nodes[i].id;
         nodes[id] = new Node(id);
-        nodes[id].report = {"Agent":[data.nodes[i].label]};
+        nodes[id].report = {"Channel":[data.nodes[i].label]};
     }
 
     // Second link the nodes together
