@@ -26,10 +26,11 @@ type Tag struct {
 }
 
 type Edge struct {
-	Id     string `json:"id"`
-	Source string `json:"source"`
-	Target string `json:"target"`
-	T      string `json:"type"`
+	Id        string `json:"id"`
+	Source    string `json:"source"`
+	Target    string `json:"target"`
+	T         string `json:"type"`
+	Arrowhead string `json:"arrowhead"`
 }
 
 type Graph struct {
@@ -76,10 +77,11 @@ func ToGraph(channels map[string]Channel) *Graph {
 
 			//one edge for every channel destination
 			e := &Edge{
-				Id:     fmt.Sprintf("%d", len(edges)+10001),
-				Source: v.Id,
-				Target: v.DestinationIds[d],
-				T:      "arrow",
+				Id:        fmt.Sprintf("%d", len(edges)+10001),
+				Source:    v.Id,
+				Target:    v.DestinationIds[d],
+				T:         "arrow",
+				Arrowhead: "vee",
 			}
 			edges = append(edges, *e)
 		}
