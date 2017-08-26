@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/caimeo/iniflags"
 
@@ -101,26 +102,19 @@ func main() {
 	url := fmt.Sprintf("http://127.0.0.1:%d/ui/graph.html", serverport)
 	launcher.OpenURL(url)
 
-	for {
-		//loop forever
-		//maybe we monitor the folder in this loop
-		//wait for something from finished channel then exit
-		<-finishedchannel
-		//fmt.Println("Complete, see your browser for directed graph diagram.\n")
-		con.Always("Complete, see your browser for directed graph diagram.\n")
-	}
+	//for {
+	//loop forever
+	//maybe we monitor the folder in this loop
+	//wait for something from finished channel then exit
+	<-finishedchannel
+	//fmt.Println("Complete, see your browser for directed graph diagram.\n")
+	con.Always("Complete, see your browser for directed graph diagram.\n")
+	//}
+
+	//sleep for a bit in case the ui is still pulling resources
+	time.Sleep(10 * time.Second)
 
 }
-
-//func PrintVerbose(s string) {
-//	if *verboseMode {
-//		PrintAlways(s)
-//	}
-//}
-
-//func PrintAlways(s string) {
-//	fmt.Println(s)
-//}
 
 func check(e error) {
 	if e != nil {
