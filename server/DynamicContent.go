@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 
-	"github.com/justinohms/mirthgraph/consoleInfo"
+	"github.com/caimeo/console"
 
 	"net"
 	"net/http"
@@ -15,20 +15,17 @@ var UseLocal bool = false
 
 var finishedchannel chan bool
 
-var Con consoleInfo.ConsoleInfo
-
 func provideData(w http.ResponseWriter, r *http.Request) {
-	//fmt.Printf("data request in: %s \n", string(r.RequestURI))
 	fmt.Fprint(w, "graphdata=")
 	fmt.Fprint(w, Content)
 	fmt.Fprint(w, ";")
-	Con.PrintVerbose(fmt.Sprintf("serving data: %d", len(Content)))
+	console.Verbose(fmt.Sprintf("serving data: %d", len(Content)))
 	finishedchannel <- true
 }
 
 func provideUI(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path //r.URL.Path[1:]
-	Con.PrintVerbose(fmt.Sprintf("serving interface: %s", path))
+	console.Verbose("serving interface: ", path)
 	FSIoCopy(UseLocal, path, w)
 }
 
@@ -46,10 +43,7 @@ func ServeDynamicContent(p chan int, d chan string, f chan bool) {
 	var finalport = 0
 	for finalport == 0 {
 		addr := fmt.Sprintf(":%d", bindport)
-		//err := http.ListenAndServe(addr, nil)
 		server = &http.Server{Addr: addr, Handler: nil}
-		//err := server.ListenAndServe()
-
 		ln, err := net.Listen("tcp", addr)
 		if err != nil {
 			if strings.Contains(err.Error(), "bind: permission denied") || strings.Contains(err.Error(), "bind: address already in use") {

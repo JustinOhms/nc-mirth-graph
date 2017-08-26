@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/justinohms/iniflags"
+	"github.com/caimeo/iniflags"
 
 	"github.com/justinohms/mirthgraph/launcher"
 	"github.com/justinohms/mirthgraph/mirth"
 	"github.com/justinohms/mirthgraph/server"
 
-	"github.com/justinohms/mirthgraph/consoleInfo"
+	"github.com/caimeo/console"
 )
 
 //read from the command line
@@ -23,7 +23,7 @@ var verboseMode = flag.Bool("verbose", false, "Verbose console output.")
 var channels = make(map[string]mirth.Channel)
 var channelPaths []string
 
-var con consoleInfo.ConsoleInfo
+var con console.Console
 
 /*
 NOTE about static vs. local content
@@ -45,24 +45,23 @@ func main() {
 	iniflags.SetAllowMissingConfigFile(true)
 	iniflags.Parse()
 
-	con := consoleInfo.NewConsoleInfo(*verboseMode)
-	server.Con = *con
+	con := console.Init(*verboseMode, false)
 
 	fmt.Println("Mirth Chart")
 
 	useLocal := *customUIP
 	if useLocal {
-		con.PrintVerbose("Using custom UI")
+		con.Verbose("Using custom UI")
 	}
 
 	srcDir := ""
-	con.PrintVerbose("scanning directory...")
+	con.Verbose("scanning directory...")
 	if *srcDirP == "" {
 		srcDir, _ = os.Getwd()
 	} else {
 		srcDir = *srcDirP
 	}
-	con.PrintAlways(srcDir)
+	con.Always(srcDir)
 
 	//load the channelPaths
 	s := mirth.Scanner{}
@@ -91,7 +90,7 @@ func main() {
 	//fmt.Println("after")
 	serverport := <-portchannel
 	//fmt.Println("server started on port:", serverport)
-	con.PrintVerbose(fmt.Sprintf("server started on port: %d", serverport))
+	con.Verbose(fmt.Sprintf("server started on port: %d", serverport))
 
 	// send the data in
 	datachannel <- g
@@ -108,7 +107,7 @@ func main() {
 		//wait for something from finished channel then exit
 		<-finishedchannel
 		//fmt.Println("Complete, see your browser for directed graph diagram.\n")
-		con.PrintAlways("Complete, see your browser for directed graph diagram.\n")
+		con.Always("Complete, see your browser for directed graph diagram.\n")
 	}
 
 }
