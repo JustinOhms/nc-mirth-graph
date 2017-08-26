@@ -9,9 +9,9 @@ import (
 
 	"github.com/caimeo/iniflags"
 
-	"github.com/justinohms/mirthgraph/launcher"
-	"github.com/justinohms/mirthgraph/mirth"
-	"github.com/justinohms/mirthgraph/server"
+	"github.com/justinohms/mirth-graph/launcher"
+	"github.com/justinohms/mirth-graph/mirth"
+	"github.com/justinohms/mirth-graph/server"
 
 	"github.com/caimeo/console"
 )

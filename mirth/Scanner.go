@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/justinohms/mirthgraph/fileutils"
+	"github.com/justinohms/mirth-graph/fileutils"
 )
 
 const ChannelSig = "<channel version=" //this is the first few characters of the file
